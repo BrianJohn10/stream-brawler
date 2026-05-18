@@ -10,7 +10,7 @@ export interface ItemTemplate {
 export const ITEM_TEMPLATES: Record<string, ItemTemplate> = {
   rusty_dagger: { id: 'rusty_dagger', name: 'Rusty Dagger', slot: 'weapon', rarity: 'common', baseStat: 'power', baseValue: 1 },
   iron_sword: { id: 'iron_sword', name: 'Iron Sword', slot: 'weapon', rarity: 'rare', baseStat: 'power', baseValue: 3 },
-  knight_greatsword: { id: 'knight_greatsword', name: 'Knight Greatsword', slot: 'epic', rarity: 'epic', baseStat: 'power', baseValue: 6 },
+  knight_greatsword: { id: 'knight_greatsword', name: 'Knight Greatsword', slot: 'weapon', rarity: 'epic', baseStat: 'power', baseValue: 6 },
   excalibur: { id: 'excalibur', name: 'Excalibur', slot: 'weapon', rarity: 'legendary', baseStat: 'finesse', baseValue: 12 },
   
   padded_vest: { id: 'padded_vest', name: 'Padded Vest', slot: 'armor', rarity: 'common', baseStat: 'toughness', baseValue: 1 },
