@@ -7,12 +7,13 @@ interface TierConfig {
   fee: number;
   payout: number;
   statPool: number;
+  difficulty: number;
 }
 
 const TIER_CONFIGS: Record<string, TierConfig> = {
-  safe: { name: "Beggar", fee: 10, payout: 15, statPool: 2 },
-  fair: { name: "Guard", fee: 25, payout: 50, statPool: 5 },
-  suicide: { name: "Knight", fee: 100, payout: 500, statPool: 12 },
+  safe: { name: "Beggar", fee: 10, payout: 15, statPool: 2, difficulty: 1 },
+  fair: { name: "Guard", fee: 25, payout: 50, statPool: 5, difficulty: 2 },
+  suicide: { name: "Knight", fee: 100, payout: 500, statPool: 12, difficulty: 5 },
 };
 
 export async function POST(request: Request) {
@@ -119,18 +120,52 @@ export async function POST(request: Request) {
   if (fighterWon) {
     logs.push(`Victory! ${fighter.name} has defeated ${npc.name}.`);
 
-    // Reward Gold and increment win count
-    await supabase
-      .from("users")
-      .update({ wallet_balance: userData.wallet_balance - tier.fee + tier.payout })
-      .eq("id", user.id);
+// Experience and Leveling Logic
+    const rewardGold = tier.payout;
+    const xpGained = tier.difficulty * 50;
+    let currentLevel = fighter.level || 1;
+    let currentXp = (fighter.xp || 0) + xpGained;
+    let xpNeeded = currentLevel * 100;
+    let leveledUp = false;
 
-    await supabase
-      .from("fighters")
-      .update({ wins: fighter.wins + 1 })
-      .eq("id", fighter.id);
+    const stats = {
+      stat_power: fighter.stat_power,
+      stat_vitality: fighter.stat_vitality,
+      stat_toughness: fighter.stat_toughness,
+      stat_speed: fighter.stat_speed,
+      stat_finesse: fighter.stat_finesse,
+      stat_luck: fighter.stat_luck,
+    };
 
-    // FIXED: Loot Drop System is now strictly isolated INSIDE the victory block
+    // Process potential multiple level ups
+    while (currentXp >= xpNeeded) {
+      currentXp -= xpNeeded;
+      currentLevel++;
+      xpNeeded = currentLevel * 100;
+      leveledUp = true;
+
+      // Auto-allocate 1 random stat point per level
+      const statKeys = Object.keys(stats) as (keyof typeof stats)[];
+      const randomStat = statKeys[Math.floor(Math.random() * statKeys.length)];
+      stats[randomStat]++;
+      
+      logs.push(`Level Up! Reached Level ${currentLevel}. +1 to ${randomStat.replace('stat_', '').toUpperCase()}.`);
+    }
+
+    logs.push(`Victory! Earned ${rewardGold}g and ${xpGained} XP.`);
+
+    // Update fighter and economy
+    await supabase.from('fighters').update({ 
+      wins: fighter.wins + 1,
+      level: currentLevel,
+      xp: currentXp,
+      ...stats
+    }).eq('id', fighter.id);
+
+    await supabase.from('users').update({ 
+      wallet_balance: userData.wallet_balance - tier.fee + rewardGold 
+    }).eq('id', user.id);
+
     if (Math.random() <= 0.4) {
       const templateKeys = Object.keys(ITEM_TEMPLATES);
       const randomKey = templateKeys[Math.floor(Math.random() * templateKeys.length)];

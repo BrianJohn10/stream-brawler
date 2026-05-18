@@ -9,6 +9,8 @@ interface Fighter {
   name: string;
   sprite_id: string;
   wins: number;
+  level: number;
+  xp: number;
   stat_power: number;
   stat_vitality: number;
   stat_toughness: number;
@@ -227,7 +229,13 @@ export default function Dashboard() {
                 <div className="w-12 h-12 bg-zinc-800 rounded-lg flex items-center justify-center text-xs uppercase font-bold border border-zinc-700 text-zinc-400">{fighter.sprite_id.substring(0, 3)}</div>
                 <div>
                   <h3 className="font-bold text-sm tracking-wide truncate max-w-[140px]">{fighter.name}</h3>
-                  <p className="text-xs text-zinc-400">Level 1 • {fighter.wins} Wins</p>
+                  <div className="w-32 h-2 bg-zinc-800 rounded-full overflow-hidden border border-zinc-700">
+                    <div className="h-full bg-amber-500" style={{ width: `${((fighter.xp || 0) / ((fighter.level || 1) * 100)) * 100}%` }}></div>
+                  </div>
+                  <span className="text-[10px] text-zinc-500 font-mono">
+                    {fighter.xp || 0} / {(fighter.level || 1) * 100} XP
+                  </span>
+                  <p className="text-xs text-zinc-400">Level {fighter.level || 1} • {fighter.wins} Wins</p>
                 </div>
               </div>
               <span className="text-zinc-500 text-xs font-semibold uppercase md:hidden">{isMobileExpanded ? "Hide Stats ▴" : "Show Stats ▾"}</span>
