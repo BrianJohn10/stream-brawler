@@ -393,9 +393,9 @@ export default function Dashboard() {
                     <span className="animate-pulse text-purple-400">● Core Active</span>
                   </div>
                   {battleLogs.map((log, index) => (
-                    <p key={index} className={`${log.includes("Victory!") ? "text-emerald-400 font-bold" : log.includes("Defeat!") ? "text-red-500 font-bold" : log.includes("CRIT!") ? "text-amber-400" : "text-zinc-400"}`}>
-                      {log}
-                    </p>
+                    <div key={index} className="text-xs font-mono text-zinc-400 mb-1">
+                      {typeof log === 'string' ? log : (log as { message: string }).message}
+                    </div>
                   ))}
                 </div>
               )}
