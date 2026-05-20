@@ -236,7 +236,7 @@ export default function ReplayPage() {
               className="w-[128px] h-[128px] origin-bottom"
               style={{
                 transform: `scaleX(${fFlip})`,
-                backgroundImage: `url(/sprites/fighters/lttp-link-2x.webp)`,
+                backgroundImage: `url(/sprites/fighters/lttp-link.webp)`,
                 backgroundPosition: `-${fPose.x * 128}px -${fPose.y * 128}px`,
                 imageRendering: "pixelated",
               }}
@@ -266,7 +266,7 @@ export default function ReplayPage() {
               style={{
                 transform: `scaleX(${nFlip})`,
                 // backgroundImage: `url(/sprites/enemies/${battle.npc_sprite_id}.png)`,
-                backgroundImage: `url(/sprites/fighters/megaman-x-2x.webp)`,
+                backgroundImage: `url(/sprites/fighters/megaman-x.webp)`,
                 backgroundPosition: `-${nPose.x * 128}px -${nPose.y * 128}px`,
                 imageRendering: "pixelated",
               }}
