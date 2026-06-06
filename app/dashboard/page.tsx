@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { ITEM_TEMPLATES } from "@/utils/items";
+import Link from "next/link";
 
 interface Fighter {
   id: string;
@@ -51,6 +52,7 @@ export default function Dashboard() {
   const [battleLogs, setBattleLogs] = useState<string[]>([]);
   const [graveyard, setGraveyard] = useState<Fighter[]>([]);
   const [isFusing, setIsFusing] = useState(false);
+  const [lastBattleId, setLastBattleId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [isRolling, setIsRolling] = useState(false);
@@ -98,6 +100,7 @@ export default function Dashboard() {
   };
 
   const handleFight = async (tier: "safe" | "fair" | "suicide") => {
+    setLastBattleId(null);
     setIsFighting(true);
     setBattleLogs(["Entering the Arena gates..."]);
     try {
@@ -110,6 +113,9 @@ export default function Dashboard() {
       if (data.success) {
         setBattleLogs(data.battleLogs);
         await fetchActiveFighter();
+      }
+      if (data.battleId) {
+        setLastBattleId(data.battleId);
       }
     } finally {
       setIsFighting(false);
@@ -399,6 +405,20 @@ export default function Dashboard() {
                   ))}
                 </div>
               )}
+              {lastBattleId && (
+          <div className="flex justify-center mt-6 pt-6 border-t border-zinc-800">
+            <Link 
+              href={`/replay/${lastBattleId}`}
+              target="_blank" // Opens in a new tab so they don't lose their dashboard state!
+              className="bg-zinc-800 hover:bg-zinc-700 text-amber-500 font-bold py-2 px-6 rounded-full text-sm uppercase tracking-widest transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Watch Replay
+            </Link>
+          </div>
+        )}
             </div>
           )}
 

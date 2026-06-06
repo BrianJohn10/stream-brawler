@@ -24,3 +24,11 @@ All ideas, not prioritized in order
 - Tournaments
 - Recent results ticker
 - Friendly URLs for fight replays for sharing purposes
+
+## Rarity Guide
+ - 60%  | Common    | white
+ - 25%  | Uncommon  | green
+ - 10%  | Rare      | blue
+ - 4%   | Epic      | purple
+ - 0.9% | Legendary | orange
+ - 0.1% | Heirloom  | red

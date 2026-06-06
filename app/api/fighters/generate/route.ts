@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServerAdminClient } from '@/utils/supabase/server';
+import { rollRandomSprite } from '@/lib/game/sprites'; // Adjust path if needed
 
 export async function POST(request: Request) {
   const supabase = await createServerAdminClient();
@@ -43,13 +44,15 @@ export async function POST(request: Request) {
     stats[randomStat]++;
   }
 
+  const newSpriteId = rollRandomSprite();
+
   // 5. Save the new fighter
   const { data: newFighter, error: insertError } = await supabase
     .from('fighters')
     .insert({
       user_id: user.id,
-      name: fighterName,
-      sprite_id: 'spr_base_1', 
+      name: fighterName || 'Unknown Brawler',
+      sprite_id: newSpriteId, 
       stat_power: stats.power,
       stat_vitality: stats.vitality,
       stat_toughness: stats.toughness,
